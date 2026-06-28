@@ -1,0 +1,73 @@
+@model EduManage.Models.Exam
+@{
+    ViewData["Title"] = "Create Exam";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var classes = (List<string>)ViewBag.Classes;
+}
+
+<div class="dashboard">
+    @await Html.PartialAsync("_AdminSidebar")
+
+    <main class="main-content">
+        <div class="page-header">
+            <div class="page-title">Create Exam Schedule</div>
+            <div class="page-sub">Schedule a new exam and subject evaluation.</div>
+        </div>
+
+        <div class="card">
+            <div class="card-title">
+                <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                </svg>
+                Exam Details
+            </div>
+
+            <form method="post" action="/Exam/CreateExam">
+                @Html.AntiForgeryToken()
+
+                <div class="form-row">
+                    <div>
+                        <label class="field-label">Exam Name *</label>
+                        <input class="field-input" type="text" name="Name" placeholder="e.g. Mid-Term Examination 2026" required />
+                    </div>
+                    <div>
+                        <label class="field-label">Subject *</label>
+                        <input class="field-input" type="text" name="Subject" placeholder="e.g. Mathematics" required />
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div>
+                        <label class="field-label">Target Class *</label>
+                        <select class="field-select" name="Class" required>
+                            <option value="">Select Class</option>
+                            @foreach (var c in classes)
+                            {
+                                <option value="@c">@c</option>
+                            }
+                        </select>
+                    </div>
+                    <div>
+                        <label class="field-label">Total Marks *</label>
+                        <input class="field-input" type="number" name="TotalMarks" value="100" min="10" required />
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div>
+                        <label class="field-label">Exam Date *</label>
+                        <input class="field-input" type="date" name="Date" required min="@DateTime.Today.ToString("yyyy-MM-dd")" />
+                    </div>
+                    <div>
+                        <!-- Empty for row alignment -->
+                    </div>
+                </div>
+
+                <div class="form-actions">
+                    <a href="/Exam/Index" class="btn btn-outline">Cancel</a>
+                    <button type="submit" class="btn btn-primary">Schedule Exam</button>
+                </div>
+            </form>
+        </div>
+    </main>
+</div>

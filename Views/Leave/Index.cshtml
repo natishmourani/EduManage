@@ -1,0 +1,189 @@
+@model IEnumerable<EduManage.Models.LeaveRequest>
+@using Microsoft.AspNetCore.Http
+@{
+    ViewData["Title"] = "Leave Management";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var role = Context.Session.GetString("Role");
+}
+
+<div class="dashboard">
+    @if (role == "Admin") { @await Html.PartialAsync("_AdminSidebar") }
+    else if (role == "Teacher") { @await Html.PartialAsync("_TeacherSidebar") }
+    else if (role == "Student") { @await Html.PartialAsync("_StudentSidebar") }
+
+    <main class="main-content">
+        <div class="page-header" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:15px;">
+            <div>
+                <div class="page-title">Leave Management</div>
+                <div class="page-sub">Submit, track, and approve academic leave requests.</div>
+            </div>
+            @if (role == "Student" || role == "Teacher")
+            {
+                <div>
+                    <a href="/Leave/SubmitRequest" class="btn btn-primary">+ Request Leave</a>
+                </div>
+            }
+        </div>
+
+        @if (role == "Admin")
+        {
+            <!-- Admin View: Pending Requests -->
+            <div class="card">
+                <div class="card-title">
+                    <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                    </svg>
+                    Pending Approvals
+                </div>
+
+                @{
+                    var pending = Model.Where(m => m.Status == "Pending").ToList();
+                }
+
+                @if (pending.Any())
+                {
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Requester</th>
+                                <th>Role</th>
+                                <th>Start Date</th>
+                                <th>End Date</th>
+                                <th>Reason</th>
+                                <th>Requested At</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var request in pending)
+                            {
+                                <tr>
+                                    <td><strong>@request.RequesterName</strong></td>
+                                    <td><span class="badge @(request.RequesterRole == "Teacher" ? "badge-green" : "badge-purple")">@request.RequesterRole</span></td>
+                                    <td>@request.StartDate.ToString("dd MMM yyyy")</td>
+                                    <td>@request.EndDate.ToString("dd MMM yyyy")</td>
+                                    <td>@request.Reason</td>
+                                    <td>@request.RequestedAt.ToString("dd MMM yyyy, hh:mm tt")</td>
+                                    <td>
+                                        <div style="display:flex; gap:10px;">
+                                            <form method="post" action="/Leave/ApproveReject" style="margin:0;">
+                                                @Html.AntiForgeryToken()
+                                                <input type="hidden" name="id" value="@request.Id" />
+                                                <input type="hidden" name="status" value="Approved" />
+                                                <button type="submit" class="btn btn-primary" style="padding:6px 12px; font-size:12px; margin-bottom:0; background:var(--green); border-color:var(--green);">Approve</button>
+                                            </form>
+                                            <form method="post" action="/Leave/ApproveReject" style="margin:0;">
+                                                @Html.AntiForgeryToken()
+                                                <input type="hidden" name="id" value="@request.Id" />
+                                                <input type="hidden" name="status" value="Rejected" />
+                                                <button type="submit" class="btn btn-danger" style="padding:6px 12px; font-size:12px; margin-bottom:0;">Reject</button>
+                                            </form>
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                }
+                else
+                {
+                    <div style="color:var(--gray-400); padding:20px; text-align:center;">No pending leave requests.</div>
+                }
+            </div>
+
+            <!-- Admin View: Leave History -->
+            <div class="card" style="margin-top:20px;">
+                <div class="card-title">
+                    Approval History
+                </div>
+                @{
+                    var history = Model.Where(m => m.Status != "Pending").ToList();
+                }
+
+                @if (history.Any())
+                {
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Requester</th>
+                                <th>Role</th>
+                                <th>Duration</th>
+                                <th>Reason</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var request in history)
+                            {
+                                <tr>
+                                    <td>@request.RequesterName</td>
+                                    <td><span class="badge @(request.RequesterRole == "Teacher" ? "badge-green" : "badge-purple")">@request.RequesterRole</span></td>
+                                    <td>@request.StartDate.ToString("d MMM") - @request.EndDate.ToString("d MMM yyyy")</td>
+                                    <td>@request.Reason</td>
+                                    <td>
+                                        <span class="badge @(request.Status == "Approved" ? "badge-green" : "badge-danger")">@request.Status</span>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                }
+                else
+                {
+                    <div style="color:var(--gray-400); padding:20px; text-align:center;">No historical decisions.</div>
+                }
+            </div>
+        }
+        else
+        {
+            <!-- Teacher/Student View: My Requests -->
+            <div class="card">
+                <div class="card-title">
+                    My Leave History
+                </div>
+
+                @if (Model != null && Model.Any())
+                {
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Duration</th>
+                                <th>Reason</th>
+                                <th>Requested On</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var request in Model)
+                            {
+                                <tr>
+                                    <td>@request.StartDate.ToString("dd MMM yyyy") - @request.EndDate.ToString("dd MMM yyyy")</td>
+                                    <td>@request.Reason</td>
+                                    <td>@request.RequestedAt.ToString("dd MMM yyyy")</td>
+                                    <td>
+                                        @if (request.Status == "Pending")
+                                        {
+                                            <span class="badge badge-amber">Pending</span>
+                                        }
+                                        else if (request.Status == "Approved")
+                                        {
+                                            <span class="badge badge-green">Approved</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge badge-danger">Rejected</span>
+                                        }
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                }
+                else
+                {
+                    <div style="color:var(--gray-400); padding:30px; text-align:center;">You have not submitted any leave requests yet.</div>
+                }
+            </div>
+        }
+    </main>
+</div>

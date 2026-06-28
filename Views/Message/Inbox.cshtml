@@ -1,0 +1,78 @@
+@model IEnumerable<EduManage.Models.Message>
+@using Microsoft.AspNetCore.Http
+@{
+    ViewData["Title"] = "Inbox";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var role = Context.Session.GetString("Role");
+}
+
+<div class="dashboard">
+    @if (role == "Teacher") { @await Html.PartialAsync("_TeacherSidebar") }
+    else if (role == "Student") { @await Html.PartialAsync("_StudentSidebar") }
+
+    <main class="main-content">
+        <div class="page-header" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:15px;">
+            <div>
+                <div class="page-title">Internal Messaging</div>
+                <div class="page-sub">Communicate with students or teachers securely.</div>
+            </div>
+            <div>
+                <a href="/Message/Send" class="btn btn-primary">+ Compose Message</a>
+            </div>
+        </div>
+
+        <div style="display:flex; gap:10px; margin-bottom:20px;">
+            <a href="/Message/Inbox" class="btn btn-primary" style="margin-bottom:0;">Inbox</a>
+            <a href="/Message/Sent" class="btn btn-outline" style="margin-bottom:0;">Sent Messages</a>
+        </div>
+
+        <div class="card">
+            <div class="card-title">
+                <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path d="M3 19v-8.93a2 2 0 01.89-1.664l8-5.333a2 2 0 012.22 0l8 5.333A2 2 0 0121 10.07V19M3 19a2 2 0 002 2h14a2 2 0 002-2M3 19l6.75-4.5M21 19l-6.75-4.5M3 10l6.75 4.5M21 10l-6.75 4.5m0 0l-2.25-1.5a2 2 0 00-2.22 0l-2.25 1.5"/>
+                </svg>
+                My Inbox
+            </div>
+
+            @if (Model != null && Model.Any())
+            {
+                <div style="display:flex; flex-direction:column; gap:12px;">
+                    @foreach (var msg in Model)
+                    {
+                        <div style="border:1px solid var(--gray-200); border-radius:8px; padding:15px; background:white; cursor:pointer;" onclick="toggleMessage(@msg.Id)">
+                            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px; flex-wrap:wrap; gap:5px;">
+                                <div>
+                                    <span style="font-size:12px; color:var(--gray-400);">From:</span>
+                                    <strong style="color:var(--gray-800);">@msg.SenderName</strong> &nbsp;
+                                    <span class="badge @(msg.SenderRole == "Teacher" ? "badge-green" : "badge-purple")" style="font-size:10px; padding:2px 6px;">@msg.SenderRole</span>
+                                </div>
+                                <span style="font-size:12px; color:var(--gray-400);">@msg.SentAt.ToString("g")</span>
+                            </div>
+                            
+                            <div style="font-weight:700; color:var(--gray-700); font-size:14px; margin-bottom:5px;">
+                                @msg.Subject
+                            </div>
+
+                            <div id="body-@msg.Id" style="display:none; margin-top:10px; padding-top:10px; border-top:1px solid var(--gray-100); font-size:14px; line-height:1.6; color:var(--gray-600); white-space:pre-wrap;">@msg.Body</div>
+                        </div>
+                    }
+                </div>
+            }
+            else
+            {
+                <div style="color:var(--gray-400); padding:30px; text-align:center;">No received messages.</div>
+            }
+        </div>
+    </main>
+</div>
+
+<script>
+    function toggleMessage(id) {
+        var el = document.getElementById('body-' + id);
+        if (el.style.display === 'none') {
+            el.style.display = 'block';
+        } else {
+            el.style.display = 'none';
+        }
+    }
+</script>

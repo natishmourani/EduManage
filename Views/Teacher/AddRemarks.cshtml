@@ -1,0 +1,92 @@
+@{
+    ViewData["Title"] = "Add Remarks";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="dashboard">
+    @await Html.PartialAsync("_TeacherSidebar")
+
+    <main class="main-content">
+        <div class="page-header">
+            <div class="page-title">Add remarks</div>
+            <div class="page-sub">Write teacher remarks for the student.</div>
+        </div>
+
+        <div class="card" style="margin-bottom:16px;">
+            <div class="card-title">Search Student</div>
+            <form asp-action="AddRemarks" asp-controller="Teacher" method="get">
+                <div style="display:flex;gap:10px;">
+                    <input class="field-input" name="rollNo" placeholder="Enter roll number..." style="flex:1;" />
+                    <button type="submit" class="btn btn-green">Search</button>
+                </div>
+            </form>
+        </div>
+
+        @if (ViewBag.Student != null)
+        {
+            var s = ViewBag.Student as EduManage.Models.Student;
+            <div class="card">
+                <div class="card-title">Remark for @s.FullName</div>
+
+                <div style="margin-bottom:16px;padding:12px;background:var(--gray-50);border-radius:9px;font-size:13px;color:var(--gray-600);">
+                    <strong>@s.FullName</strong> · @s.Class-@s.Section · Roll: @s.RollNumber
+                </div>
+
+                <form asp-action="SaveRemark" asp-controller="Teacher" method="post">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" name="StudentId" value="@s.Id" />
+
+                    <div class="form-row full">
+                        <div>
+                            <label class="field-label">Remark type</label>
+                            <select class="field-select" name="RemarkType">
+                                <option>Academic</option>
+                                <option>Behavior</option>
+                                <option>Attendance</option>
+                                <option>General</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-row full">
+                        <div>
+                            <label class="field-label">Remark *</label>
+                            <textarea class="field-input" name="Remark" rows="4"
+                                      placeholder="Write remarks about the student..."
+                                      style="resize:vertical;" required></textarea>
+                        </div>
+                    </div>
+
+                    @if (ViewBag.Success != null)
+                    {
+                        <p style="color:var(--green);font-size:13px;margin-bottom:10px;">@ViewBag.Success</p>
+                    }
+
+                    <div class="form-actions">
+                        <button type="submit" class="btn btn-green">Save remark</button>
+                    </div>
+                </form>
+
+                @if (ViewBag.Remarks != null)
+                {
+                    var remarks = ViewBag.Remarks as IEnumerable<EduManage.Models.Remark>;
+                    if (remarks != null && remarks.Any())
+                    {
+                        <div style="margin-top:20px;border-top:1px solid var(--gray-200);padding-top:16px;">
+                            <div class="card-title" style="margin-bottom:12px;">Previous remarks</div>
+                            @foreach (var r in remarks)
+                            {
+                                <div style="padding:12px;background:var(--gray-50);border-radius:9px;margin-bottom:8px;">
+                                    <div style="display:flex;justify-content:space-between;margin-bottom:4px;">
+                                        <span class="badge badge-blue">@r.RemarkType</span>
+                                        <span style="font-size:12px;color:var(--gray-400);">@r.CreatedAt.ToString("d MMM yyyy")</span>
+                                    </div>
+                                    <p style="font-size:13px;margin:0;">@r.RemarkText</p>
+                                </div>
+                            }
+                        </div>
+                    }
+                }
+            </div>
+        }
+    </main>
+</div>

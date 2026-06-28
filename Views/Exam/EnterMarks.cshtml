@@ -1,0 +1,79 @@
+@model IEnumerable<EduManage.Models.Student>
+@using Microsoft.AspNetCore.Http
+@{
+    ViewData["Title"] = "Enter Marks";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var role = Context.Session.GetString("Role");
+    var exam = (EduManage.Models.Exam)ViewBag.Exam;
+    var results = (Dictionary<int, EduManage.Models.Result>)ViewBag.Results;
+}
+
+<div class="dashboard">
+    @if (role == "Admin") { @await Html.PartialAsync("_AdminSidebar") }
+    else if (role == "Teacher") { @await Html.PartialAsync("_TeacherSidebar") }
+
+    <main class="main-content">
+        <div class="page-header" style="display:flex; justify-content:space-between; align-items:center;">
+            <div>
+                <div class="page-title">Enter Marks</div>
+                <div class="page-sub">Enter marks for <strong>@exam.Name</strong> - Subject: <strong>@exam.Subject</strong> (@exam.Class)</div>
+            </div>
+            <div>
+                <a href="/Exam/Index" class="btn btn-outline">&larr; Back to exams</a>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-title">
+                <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+                </svg>
+                Enter marks (Max Marks: @exam.TotalMarks)
+            </div>
+
+            @if (Model != null && Model.Any())
+            {
+                <form method="post" action="/Exam/SaveMarks">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" name="examId" value="@exam.Id" />
+
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Roll No</th>
+                                <th>Student Name</th>
+                                <th>Obtained Marks</th>
+                                <th>Remarks</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var student in Model)
+                            {
+                                var currentMarks = results.ContainsKey(student.Id) ? results[student.Id].ObtainedMarks.ToString() : "";
+                                var currentRemarks = results.ContainsKey(student.Id) ? results[student.Id].Remarks : "";
+                                <tr>
+                                    <td>@student.RollNumber</td>
+                                    <td>@student.FullName</td>
+                                    <td>
+                                        <input class="field-input" type="number" name="obtainedMarks[@student.Id]" value="@currentMarks" min="0" max="@exam.TotalMarks" required placeholder="0-@exam.TotalMarks" style="width:120px; padding:6px 10px; font-size:13px; margin-bottom:0;" />
+                                    </td>
+                                    <td>
+                                        <input class="field-input" type="text" name="remarks[@student.Id]" value="@currentRemarks" placeholder="Optional remark" style="padding:6px 10px; font-size:13px; margin-bottom:0;" />
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+
+                    <div class="form-actions" style="margin-top:20px;">
+                        <button type="submit" class="btn btn-primary">Save Marks</button>
+                    </div>
+                </form>
+            }
+            else
+            {
+                <div style="color:var(--gray-400); padding:20px; text-align:center;">No students found in this class (@exam.Class).</div>
+            }
+        </div>
+    </main>
+</div>

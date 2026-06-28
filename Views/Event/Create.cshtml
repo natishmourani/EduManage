@@ -1,0 +1,85 @@
+@model EduManage.Models.Event
+@{
+    ViewData["Title"] = "Add Event";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="dashboard">
+    @await Html.PartialAsync("_AdminSidebar")
+
+    <main class="main-content">
+        <div class="page-header">
+            <div class="page-title">Add Event / Schedule</div>
+            <div class="page-sub">Schedule a new school-wide event, holiday period, or exam block.</div>
+        </div>
+
+        <div class="card">
+            <div class="card-title">
+                <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                </svg>
+                Event Details
+            </div>
+
+            <form method="post" action="/Event/Create" onsubmit="return validateEventDates();">
+                @Html.AntiForgeryToken()
+
+                <div class="form-row">
+                    <div>
+                        <label class="field-label">Event Title *</label>
+                        <input class="field-input" type="text" name="Title" placeholder="e.g. Sports Day, Summer Break" required />
+                    </div>
+                    <div>
+                        <label class="field-label">Event Type *</label>
+                        <select class="field-select" name="Type" required>
+                            <option value="">Select Event Type</option>
+                            <option value="Event">School Event</option>
+                            <option value="Holiday">Holiday</option>
+                            <option value="Exam">Exam Schedule</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div>
+                        <label class="field-label">Start Date *</label>
+                        <input class="field-input" type="date" id="StartDate" name="StartDate" required min="@DateTime.Now.ToString("yyyy-MM-dd")" />
+                    </div>
+                    <div>
+                        <label class="field-label">End Date *</label>
+                        <input class="field-input" type="date" id="EndDate" name="EndDate" required min="@DateTime.Now.ToString("yyyy-MM-dd")" />
+                    </div>
+                </div>
+
+                <div class="form-row full">
+                    <div>
+                        <label class="field-label">Description (Optional)</label>
+                        <textarea class="field-input" name="Description" placeholder="Provide extra details about the event..." rows="4" style="height:auto; font-family:inherit; padding:10px;"></textarea>
+                    </div>
+                </div>
+
+                <div id="eventDateError" style="color:var(--red); font-size:13px; margin-bottom:15px; display:none;">End date must be on or after start date.</div>
+
+                <div class="form-actions">
+                    <a href="/Event/Index" class="btn btn-outline">Cancel</a>
+                    <button type="submit" class="btn btn-primary">Publish Event</button>
+                </div>
+            </form>
+        </div>
+    </main>
+</div>
+
+<script>
+    function validateEventDates() {
+        var start = new Date(document.getElementById('StartDate').value);
+        var end = new Date(document.getElementById('EndDate').value);
+        var error = document.getElementById('eventDateError');
+
+        if (end < start) {
+            error.style.display = 'block';
+            return false;
+        }
+        error.style.display = 'none';
+        return true;
+    }
+</script>

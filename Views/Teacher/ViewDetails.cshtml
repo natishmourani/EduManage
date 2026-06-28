@@ -1,0 +1,136 @@
+@model EduManage.Models.TeacherViewModel
+@{
+    ViewData["Title"] = "View Student Details";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="dashboard">
+    @await Html.PartialAsync("_TeacherSidebar")
+
+    <main class="main-content">
+        <div class="page-header">
+            <div class="page-title">View student details</div>
+            <div class="page-sub">Apni class k students ki complete profile</div>
+        </div>
+
+        <!-- Search -->
+        <form asp-action="ViewDetails" asp-controller="Teacher" method="get">
+            <div class="search-wrap">
+                <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                </svg>
+                <input class="search-input" name="search" placeholder="Search student..."
+                       value="@ViewBag.Search" />
+            </div>
+        </form>
+
+        @if (Model?.SelectedStudent != null)
+        {
+            var s = Model.SelectedStudent;
+            <div class="card">
+                <div class="card-title">
+                    <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
+                    </svg>
+                    Student profile — @s.FullName
+                </div>
+
+                <!-- Profile header -->
+                <div class="profile-card">
+                    <div class="profile-avatar avatar-green" style="background:#D1FAE5;color:#065f46;">
+                        @(s.FullName?.Length >= 2 ? s.FullName.Substring(0,2).ToUpper() : "??")
+                    </div>
+                    <div>
+                        <div class="profile-name">@s.FullName</div>
+                        <div class="profile-meta">
+                            <span>@s.Class-@s.Section</span>
+                            <span>·</span>
+                            <span>Roll no: @s.RollNumber</span>
+                            <span>·</span>
+                            <span class="badge badge-green">Active</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="detail-grid">
+                    <div class="detail-item">
+                        <div class="di-label">Father's Name</div>
+                        <div class="di-value">@s.FatherName</div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="di-label">Date of Birth</div>
+                        <div class="di-value">@s.DateOfBirth?.ToString("d MMMM yyyy")</div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="di-label">Gender</div>
+                        <div class="di-value">@s.Gender</div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="di-label">Contact</div>
+                        <div class="di-value">@s.Contact</div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="di-label">Attendance</div>
+                        <div class="di-value">
+                            <span class="badge badge-green">@s.Attendance%</span>
+                        </div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="di-label">Overall Grade</div>
+                        <div class="di-value">
+                            <span class="badge badge-blue">@s.OverallGrade</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+
+        <!-- Class list -->
+        @if (Model?.ClassStudents != null && Model.ClassStudents.Any())
+        {
+            <div class="card">
+                <div class="card-title">
+                    <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path d="M4 6h16M4 10h16M4 14h16M4 18h16"/>
+                    </svg>
+                    All students — Class 10-A
+                </div>
+
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Student</th>
+                            <th>Roll No</th>
+                            <th>Attendance</th>
+                            <th>Grade</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var st in Model.ClassStudents)
+                        {
+                            <tr>
+                                <td>
+                                    <div style="display:flex;align-items:center;gap:10px;">
+                                        <div class="avatar avatar-green">
+                                            @(st.FullName?.Length >= 2 ? st.FullName.Substring(0,2).ToUpper() : "??")
+                                        </div>
+                                        @st.FullName
+                                    </div>
+                                </td>
+                                <td>@st.RollNumber</td>
+                                <td>
+                                    <span class="badge @(st.Attendance >= 90 ? "badge-green" : st.Attendance >= 75 ? "badge-amber" : "badge-red")">
+                                        @st.Attendance%
+                                    </span>
+                                </td>
+                                <td>
+                                    <span class="badge badge-blue">@st.OverallGrade</span>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+    </main>
+</div>

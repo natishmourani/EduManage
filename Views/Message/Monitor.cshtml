@@ -1,0 +1,81 @@
+@model IEnumerable<EduManage.Models.Message>
+@{
+    ViewData["Title"] = "Monitor Communications";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="dashboard">
+    @await Html.PartialAsync("_AdminSidebar")
+
+    <main class="main-content">
+        <div class="page-header">
+            <div class="page-title">Monitor Communications</div>
+            <div class="page-sub">Audit log of all internal messages exchanged on the platform.</div>
+        </div>
+
+        <div class="card">
+            <div class="card-title">
+                <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                </svg>
+                Message Log
+            </div>
+
+            @if (Model != null && Model.Any())
+            {
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Sender</th>
+                            <th>Receiver</th>
+                            <th>Subject</th>
+                            <th>Sent At</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var msg in Model)
+                        {
+                            <tr>
+                                <td>
+                                    <strong>@msg.SenderName</strong> <br />
+                                    <span class="badge @(msg.SenderRole == "Teacher" ? "badge-green" : "badge-purple")" style="font-size:10px; padding:1px 5px;">@msg.SenderRole</span>
+                                </td>
+                                <td>
+                                    <strong>@msg.ReceiverName</strong> <br />
+                                    <span class="badge @(msg.ReceiverRole == "Teacher" ? "badge-green" : "badge-purple")" style="font-size:10px; padding:1px 5px;">@msg.ReceiverRole</span>
+                                </td>
+                                <td>@msg.Subject</td>
+                                <td>@msg.SentAt.ToString("g")</td>
+                                <td>
+                                    <button onclick="toggleLogBody(@msg.Id)" class="btn btn-outline" style="font-size:11px; padding:4px 8px;">View Content</button>
+                                </td>
+                            </tr>
+                            <tr id="log-body-@msg.Id" style="display:none; background:var(--gray-50);">
+                                <td colspan="5" style="padding:15px; font-size:13px; color:var(--gray-700); line-height:1.6;">
+                                    <strong>Message Content:</strong>
+                                    <p style="white-space:pre-wrap; margin-top:8px; background:white; padding:10px; border-radius:6px; border:1px solid var(--gray-200);">@msg.Body</p>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            }
+            else
+            {
+                <div style="color:var(--gray-400); padding:30px; text-align:center;">No messages have been logged yet.</div>
+            }
+        </div>
+    </main>
+</div>
+
+<script>
+    function toggleLogBody(id) {
+        var row = document.getElementById('log-body-' + id);
+        if (row.style.display === 'none') {
+            row.style.display = 'table-row';
+        } else {
+            row.style.display = 'none';
+        }
+    }
+</script>

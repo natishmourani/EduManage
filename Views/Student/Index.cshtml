@@ -1,0 +1,133 @@
+@{
+    ViewData["Title"] = "Student Dashboard";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var student = (EduManage.Models.Student)ViewBag.Student;
+    var gradeAverage = (double)ViewBag.GradeAverage;
+    var pendingAssignments = (int)ViewBag.PendingAssignments;
+    var announcements = (List<EduManage.Models.Announcement>)ViewBag.RecentAnnouncements;
+    var upcomingExams = (List<EduManage.Models.Exam>)ViewBag.UpcomingExams;
+    var events = (List<EduManage.Models.Event>)ViewBag.UpcomingEvents;
+}
+
+<div class="dashboard">
+    @await Html.PartialAsync("_StudentSidebar")
+
+    <main class="main-content">
+        <div class="page-header">
+            <div class="page-title">Student Dashboard</div>
+            <div class="page-sub">Welcome back, <strong>@student?.FullName</strong> (@student?.Class - Section @student?.Section).</div>
+        </div>
+
+        <!-- Metric Grid -->
+        <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap:20px; margin-bottom:25px;">
+            <div class="card" style="border-left: 5px solid var(--green); padding:20px; display:flex; flex-direction:column; justify-content:center;">
+                <div style="font-size:12px; font-weight:700; color:var(--gray-400); text-transform:uppercase;">My Attendance</div>
+                <div style="font-size:32px; font-weight:800; color:var(--gray-800); margin:5px 0;">@(student?.Attendance ?? 100)%</div>
+                <a href="/Attendance/MyAttendance" style="font-size:12px; color:var(--green); font-weight:700;">View History &rarr;</a>
+            </div>
+            <div class="card" style="border-left: 5px solid var(--purple); padding:20px; display:flex; flex-direction:column; justify-content:center;">
+                <div style="font-size:12px; font-weight:700; color:var(--gray-400); text-transform:uppercase;">Grade Average</div>
+                <div style="font-size:32px; font-weight:800; color:var(--gray-800); margin:5px 0;">@gradeAverage%</div>
+                <a href="/Exam/MyResults" style="font-size:12px; color:var(--purple); font-weight:700;">Report Card &rarr;</a>
+            </div>
+            <div class="card" style="border-left: 5px solid var(--amber); padding:20px; display:flex; flex-direction:column; justify-content:center;">
+                <div style="font-size:12px; font-weight:700; color:var(--gray-400); text-transform:uppercase;">Pending Assignments</div>
+                <div style="font-size:32px; font-weight:800; color:var(--gray-800); margin:5px 0;">@pendingAssignments</div>
+                <a href="/Assignment/Index" style="font-size:12px; color:var(--amber); font-weight:700;">Submit Homework &rarr;</a>
+            </div>
+        </div>
+
+        <div style="display:grid; grid-template-columns: 2fr 1fr; gap:25px; flex-wrap:wrap; margin-bottom:25px;">
+            <div style="display:flex; flex-direction:column; gap:20px;">
+                <!-- Announcements list -->
+                <div class="card">
+                    <div class="card-title">
+                        <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path d="M11 5.882V19.24a1.76 1.76 0 01-3.417.592l-2.147-6.15M18 13a3 3 0 100-6M5.436 13.683A4.001 4.001 0 017 6h1.832c4.1 0 7.625-1.234 9.168-3v14c-1.543-1.766-5.067-3-9.168-3H7a3.988 3.988 0 01-1.564-.317z"/>
+                        </svg>
+                        Recent Announcements
+                    </div>
+
+                    @if (announcements != null && announcements.Any())
+                    {
+                        <div style="display:flex; flex-direction:column; gap:15px; margin-top:10px;">
+                            @foreach (var ann in announcements)
+                            {
+                                <div style="padding-bottom:12px; border-bottom:1px solid var(--gray-100);">
+                                    <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:5px; margin-bottom:5px;">
+                                        <strong style="font-size:14px; color:var(--gray-800);">@ann.Title</strong>
+                                        <span style="font-size:11px; color:var(--gray-400);">
+                                            @ann.CreatedAt.ToString("g")
+                                            @if (ann.ExpiryDate.HasValue)
+                                            {
+                                                <span> · Until @ann.ExpiryDate.Value.ToString("dd MMM")</span>
+                                            }
+                                        </span>
+                                    </div>
+                                    <p style="font-size:13px; color:var(--gray-600); margin:0; line-height:1.5;">@ann.Content</p>
+                                </div>
+                            }
+                        </div>
+                    }
+                    else
+                    {
+                        <p style="color:var(--gray-400); text-align:center; padding:15px;">No announcements posted yet.</p>
+                    }
+                    <div style="margin-top:10px; text-align:right;">
+                        <a href="/Announcement/Index" style="font-size:12px; color:var(--primary); font-weight:700;">View all announcements &rarr;</a>
+                    </div>
+                </div>
+
+                <!-- Upcoming Exams -->
+                <div class="card">
+                    <div class="card-title">
+                        <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                        </svg>
+                        Upcoming Exams
+                    </div>
+
+                    @if (upcomingExams != null && upcomingExams.Any())
+                    {
+                        <div style="display:flex; flex-direction:column; gap:12px; margin-top:10px;">
+                            @foreach (var exam in upcomingExams.Where(e => e.Date.Date >= DateTime.Today))
+                            {
+                                <div style="padding-bottom:10px; border-bottom:1px solid var(--gray-100);">
+                                    <div style="font-size:14px; font-weight:700; color:var(--gray-800);">@exam.Name</div>
+                                    <div style="font-size:12px; color:var(--gray-500); margin-top:3px;">
+                                        @exam.Subject · @exam.Date.ToString("dddd, dd MMM yyyy") · @exam.TotalMarks marks
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    }
+                    else
+                    {
+                        <p style="color:var(--gray-400); text-align:center; padding:15px;">No upcoming exams scheduled.</p>
+                    }
+                </div>
+            </div>
+
+            <!-- Upcoming Events -->
+            <div class="card">
+                <div class="card-title">School Calendar</div>
+                @if (events != null && events.Any())
+                {
+                    <div style="display:flex; flex-direction:column; gap:12px; margin-top:10px;">
+                        @foreach (var ev in events)
+                        {
+                            <div style="border-left:3px solid @(ev.Type == "Holiday" ? "var(--red)" : ev.Type == "Exam" ? "var(--amber)" : "var(--primary)"); padding-left:10px;">
+                                <div style="font-size:13px; font-weight:700; color:var(--gray-800);">@ev.Title</div>
+                                <div style="font-size:11px; color:var(--gray-400);">@ev.StartDate.ToString("dd MMM") - @ev.EndDate.ToString("dd MMM yyyy")</div>
+                            </div>
+                        }
+                    </div>
+                }
+                else
+                {
+                    <p style="color:var(--gray-400); text-align:center; padding:15px; font-size:13px;">No events scheduled.</p>
+                }
+            </div>
+        </div>
+    </main>
+</div>

@@ -1,0 +1,178 @@
+@model EduManage.Models.Student
+@{
+    ViewData["Title"] = "Add Student";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="dashboard">
+    @await Html.PartialAsync("_AdminSidebar")
+
+    <main class="main-content">
+        <div class="page-header">
+            <div class="page-title">Add new student</div>
+            <div class="page-sub">Add a student record to the system.</div>
+        </div>
+
+        <div class="card">
+            <div class="card-title">
+                <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
+                </svg>
+                Student registration form
+            </div>
+
+            <form asp-action="AddStudent" asp-controller="Admin" method="post">
+                @Html.AntiForgeryToken()
+
+                <div class="form-row">
+                    <div>
+                        <label class="field-label">Full name *</label>
+                        <input class="field-input" name="FullName" placeholder="e.g. Ali Hassan" required />
+                    </div>
+                    <div>
+                        <label class="field-label">Father's name *</label>
+                        <input class="field-input" name="FatherName" placeholder="e.g. Hassan Ahmed" required />
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div>
+                        <label class="field-label">Date of birth</label>
+                        <input class="field-input" type="date" name="DateOfBirth" max="@DateTime.Today.ToString("yyyy-MM-dd")" />
+                    </div>
+                    <div>
+                        <label class="field-label">Gender *</label>
+                        <select class="field-select" name="Gender" required>
+                            <option value="">Select gender</option>
+                            <option>Male</option>
+                            <option>Female</option>
+                            <option>Other</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div>
+                        <label class="field-label">Class *</label>
+                        <select class="field-select" name="Class" required>
+                            <option value="">Select class</option>
+                            @for (int i = 1; i <= 12; i++)
+                            {
+                                <option>Class @i</option>
+                            }
+                        </select>
+                    </div>
+                    <div>
+                        <label class="field-label">Section</label>
+                        <select class="field-select" name="Section">
+                            <option>A</option>
+                            <option>B</option>
+                            <option>C</option>
+                            <option>D</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div>
+                        <label class="field-label">Roll number</label>
+                        <input class="field-input" name="RollNumber" placeholder="Will be auto-generated" readonly />
+                    </div>
+                    <div>
+                        <label class="field-label">Contact number</label>
+                        <input class="field-input" name="Contact" placeholder="0300-0000000" />
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div>
+                        <label class="field-label">Username</label>
+                        <input class="field-input" name="Username" placeholder="Optional - leave blank to auto-generate" value="@Model?.Username" autocomplete="new-password" />
+                        <span asp-validation-for="Username" style="color:var(--red); font-size:12px;"></span>
+                    </div>
+                    <div>
+                        <label class="field-label">Password</label>
+                        <input class="field-input" type="text" name="Password" placeholder="Optional - leave blank to auto-generate" autocomplete="new-password" />
+                    </div>
+                </div>
+
+                <div class="form-row full">
+                    <div>
+                        <label class="field-label">Home address</label>
+                        <input class="field-input" name="Address" placeholder="Full address" />
+                    </div>
+                </div>
+
+                @if (ViewBag.Success != null)
+                {
+                    <p style="color: var(--green); font-size:13px; margin-bottom:10px;">@ViewBag.Success</p>
+                    @if (ViewBag.SavedUsername != null || ViewBag.SavedPassword != null)
+                    {
+                        <div style="font-size:13px; margin-bottom:10px; color:var(--gray-700); padding:12px; background:var(--gray-50); border-radius:8px; border:1px solid var(--gray-200);">
+                            <strong>Login credentials (save these now):</strong>
+                            <div style="margin-top:6px;">Username: <code>@ViewBag.SavedUsername</code></div>
+                            <div>Password: <code>@ViewBag.SavedPassword</code></div>
+                            @if (ViewBag.UsernameWasGenerated == true || ViewBag.PasswordWasGenerated == true)
+                            {
+                                <div style="margin-top:6px; font-size:12px; color:var(--gray-500);">
+                                    @if (ViewBag.UsernameWasGenerated == true && ViewBag.PasswordWasGenerated == true)
+                                    {
+                                        <span>Both username and password were auto-generated.</span>
+                                    }
+                                    else if (ViewBag.UsernameWasGenerated == true)
+                                    {
+                                        <span>Username was auto-generated.</span>
+                                    }
+                                    else
+                                    {
+                                        <span>Password was auto-generated.</span>
+                                    }
+                                </div>
+                            }
+                        </div>
+                    }
+                }
+
+                <div class="form-actions">
+                    <button type="reset" class="btn btn-outline">Reset form</button>
+                    <button type="submit" class="btn btn-primary">+ Add student</button>
+                </div>
+            </form>
+
+            <!-- Quick list of students so admin can delete directly -->
+            <div style="margin-top:18px;">
+                <h3 style="margin:8px 0;">Existing students</h3>
+                @if (ViewBag.AllStudents != null && ((System.Collections.IEnumerable)ViewBag.AllStudents).Cast<object>().Any())
+                {
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Student</th>
+                                <th>Roll No</th>
+                                <th>Class</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        @foreach (var s in (System.Collections.Generic.List<EduManage.Models.Student>)ViewBag.AllStudents)
+                        {
+                            <tr>
+                                <td>@s.FullName</td>
+                                <td>@s.RollNumber</td>
+                                <td>@s.Class - @s.Section</td>
+                                <td>
+                                    <a class="btn btn-danger" href="/Admin/DeleteStudent">Delete</a>
+                                </td>
+                            </tr>
+                        }
+                        </tbody>
+                    </table>
+                }
+                else
+                {
+                    <div style="color:var(--gray-400); padding:10px;">No students yet.</div>
+                }
+            </div>
+        </div>
+    </main>
+</div>

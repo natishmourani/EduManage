@@ -1,0 +1,92 @@
+@model IEnumerable<EduManage.Models.Teacher>
+@{
+    ViewData["Title"] = "Delete Teachers";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="dashboard">
+    @await Html.PartialAsync("_AdminSidebar")
+
+    <main class="main-content">
+        <div class="page-header">
+            <div class="page-title">Delete teachers</div>
+            <div class="page-sub">Remove teacher records from the system.</div>
+        </div>
+
+        <div class="card">
+            <div class="search-wrap">
+                <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                </svg>
+                <input class="search-input" id="searchBox" placeholder="Search teacher by name or subject..." oninput="filterTable()" />
+            </div>
+
+            <table class="data-table" id="teacherTable">
+                <thead>
+                    <tr>
+                        <th>Teacher</th>
+                        <th>Subject</th>
+                        <th>Assigned Class</th>
+                        <th>Section</th>
+                        <th>Contact</th>
+                        <th>Status</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (Model != null && Model.Any())
+                    {
+                        @foreach (var t in Model)
+                        {
+                            <tr>
+                                <td>
+                                    <div style="display:flex;align-items:center;gap:10px;">
+                                        <div class="avatar avatar-blue">@(t.FullName?.Substring(0, Math.Min(2, t.FullName.Length)).ToUpper())</div>
+                                        <div>
+                                            <div style="font-weight:600;">@t.FullName</div>
+                                            <div style="font-size:12px;color:var(--gray-400);">@t.Username</div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>@t.Subject</td>
+                                <td>@t.AssignedClass</td>
+                                <td>@t.AssignedSection</td>
+                                <td>@t.Contact</td>
+                                <td><span class="badge badge-green">Active</span></td>
+                                <td>
+                                    <form asp-action="DeleteTeacher" asp-controller="Admin" method="post"
+                                          onsubmit="return confirm('Are you sure you want to delete @t.FullName?')">
+                                        @Html.AntiForgeryToken()
+                                        <input type="hidden" name="id" value="@t.Id" />
+                                        <button type="submit" class="btn btn-danger" style="padding:7px 14px;font-size:12px;">
+                                            Delete
+                                        </button>
+                                    </form>
+                                </td>
+                            </tr>
+                        }
+                    }
+                    else
+                    {
+                        <tr>
+                            <td colspan="6" style="text-align:center; padding:30px; color:var(--gray-400);">
+                                No teacher records found.
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </main>
+</div>
+
+@section Scripts {
+<script>
+function filterTable() {
+    const q = document.getElementById('searchBox').value.toLowerCase();
+    document.querySelectorAll('#teacherTable tbody tr').forEach(row => {
+        row.style.display = row.textContent.toLowerCase().includes(q) ? '' : 'none';
+    });
+}
+</script>
+}

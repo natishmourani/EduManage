@@ -1,0 +1,113 @@
+@model IEnumerable<EduManage.Models.Exam>
+@using Microsoft.AspNetCore.Http
+@{
+    ViewData["Title"] = "Exams & Results";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var role = Context.Session.GetString("Role");
+    var statusMap = (Dictionary<int, (int entered, bool published)>)ViewBag.StatusMap;
+}
+
+<div class="dashboard">
+    @if (role == "Admin") { @await Html.PartialAsync("_AdminSidebar") }
+    else if (role == "Teacher") { @await Html.PartialAsync("_TeacherSidebar") }
+
+    <main class="main-content">
+        <div class="page-header" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:15px;">
+            <div>
+                <div class="page-title">Exams & Results</div>
+                <div class="page-sub">Manage academic schedules, entry of grades, and publish results.</div>
+            </div>
+            @if (role == "Admin")
+            {
+                <div>
+                    <a href="/Exam/CreateExam" class="btn btn-primary">+ Create New Exam</a>
+                </div>
+            }
+        </div>
+
+        <div class="card">
+            <div class="card-title">
+                <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
+                </svg>
+                Academic Exams
+            </div>
+
+            @if (Model != null && Model.Any())
+            {
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Exam Name</th>
+                            <th>Class</th>
+                            <th>Subject</th>
+                            <th>Date</th>
+                            <th>Max Marks</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var exam in Model)
+                        {
+                            var status = statusMap.ContainsKey(exam.Id) ? statusMap[exam.Id] : (0, false);
+                            <tr>
+                                <td><strong>@exam.Name</strong></td>
+                                <td>@exam.Class</td>
+                                <td>@exam.Subject</td>
+                                <td>@exam.Date.ToString("dd MMM yyyy")</td>
+                                <td>@exam.TotalMarks</td>
+                                <td>
+                                    @if (status.Item1 == 0)
+                                    {
+                                        <span class="badge badge-gray">No marks entered</span>
+                                    }
+                                    else if (!status.Item2)
+                                    {
+                                        <span class="badge badge-amber">Marks entered (Draft)</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge badge-green">Published</span>
+                                    }
+                                </td>
+                                <td>
+                                    <div style="display:flex; gap:10px; align-items:center;">
+                                        @if (role == "Teacher" || role == "Admin")
+                                        {
+                                            @if (DateTime.Today < exam.Date.Date)
+                                            {
+                                                <button class="btn btn-outline" disabled style="font-size:12px; padding:6px 12px; opacity: 0.5; cursor: not-allowed;" title="Cannot grade before exam date">
+                                                    Enter Marks (@status.Item1 entered)
+                                                </button>
+                                            }
+                                            else
+                                            {
+                                                <a href="/Exam/EnterMarks?examId=@exam.Id" class="btn btn-outline" style="font-size:12px; padding:6px 12px;">
+                                                    Enter Marks (@status.Item1 entered)
+                                                </a>
+                                            }
+                                        }
+
+                                        @if (role == "Admin" && status.Item1 > 0 && !status.Item2)
+                                        {
+                                            <form method="post" action="/Exam/PublishResults" style="margin:0;">
+                                                @Html.AntiForgeryToken()
+                                                <input type="hidden" name="examId" value="@exam.Id" />
+                                                <button type="submit" class="btn btn-primary" style="font-size:12px; padding:6px 12px; margin-bottom:0;">Publish Results</button>
+                                            </form>
+                                        }
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            }
+            else
+            {
+                <div style="color:var(--gray-400); padding:30px; text-align:center;">No exams scheduled.</div>
+            }
+        </div>
+    </main>
+</div>

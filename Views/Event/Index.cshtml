@@ -1,0 +1,128 @@
+@model IEnumerable<EduManage.Models.Event>
+@using Microsoft.AspNetCore.Http
+@{
+    ViewData["Title"] = "Event Calendar";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var role = Context.Session.GetString("Role");
+}
+
+<div class="dashboard">
+    @if (role == "Admin") { @await Html.PartialAsync("_AdminSidebar") }
+    else if (role == "Teacher") { @await Html.PartialAsync("_TeacherSidebar") }
+    else if (role == "Student") { @await Html.PartialAsync("_StudentSidebar") }
+
+    <main class="main-content">
+        <div class="page-header" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:15px;">
+            <div>
+                <div class="page-title">School Event Calendar</div>
+                <div class="page-sub">Academic terms, holidays, exam schedules, and events.</div>
+            </div>
+            @if (role == "Admin")
+            {
+                <div>
+                    <a href="/Event/Create" class="btn btn-primary">+ Add New Event</a>
+                </div>
+            }
+        </div>
+
+        <div style="display:grid; grid-template-columns: 1fr 3fr; gap:20px; flex-wrap:wrap; margin-bottom:20px;">
+            <!-- Categories Card -->
+            <div class="card" style="padding:20px; height:fit-content;">
+                <div class="card-title">Event Types</div>
+                <div style="display:flex; flex-direction:column; gap:12px; margin-top:10px;">
+                    <span style="display:flex; align-items:center; gap:8px;">
+                        <span style="background:var(--primary); display:inline-block; width:12px; height:12px; border-radius:3px;"></span>
+                        <strong>School Event</strong>
+                    </span>
+                    <span style="display:flex; align-items:center; gap:8px;">
+                        <span style="background:var(--red); display:inline-block; width:12px; height:12px; border-radius:3px;"></span>
+                        <strong>Holiday</strong>
+                    </span>
+                    <span style="display:flex; align-items:center; gap:8px;">
+                        <span style="background:var(--amber); display:inline-block; width:12px; height:12px; border-radius:3px;"></span>
+                        <strong>Exam Schedule</strong>
+                    </span>
+                </div>
+            </div>
+
+            <!-- List Card -->
+            <div class="card">
+                <div class="card-title">
+                    <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                    </svg>
+                    Upcoming Schedule
+                </div>
+
+                @if (Model != null && Model.Any())
+                {
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Event / Holiday Details</th>
+                                <th>Type</th>
+                                <th>Duration</th>
+                                @if (role == "Admin")
+                                {
+                                    <th>Actions</th>
+                                }
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var ev in Model)
+                            {
+                                <tr>
+                                    <td>
+                                        <strong>@ev.Title</strong>
+                                        @if (!string.IsNullOrEmpty(ev.Description))
+                                        {
+                                            <div style="font-size:12px; color:var(--gray-500); margin-top:3px;">@ev.Description</div>
+                                        }
+                                    </td>
+                                    <td>
+                                        @if (ev.Type == "Event")
+                                        {
+                                            <span class="badge badge-blue">School Event</span>
+                                        }
+                                        else if (ev.Type == "Holiday")
+                                        {
+                                            <span class="badge badge-danger">Holiday</span>
+                                        }
+                                        else if (ev.Type == "Exam")
+                                        {
+                                            <span class="badge badge-amber">Exam Schedule</span>
+                                        }
+                                    </td>
+                                    <td>
+                                        @if (ev.StartDate.Date == ev.EndDate.Date)
+                                        {
+                                            <span>@ev.StartDate.ToString("dd MMM yyyy")</span>
+                                        }
+                                        else
+                                        {
+                                            <span>@ev.StartDate.ToString("dd MMM") - @ev.EndDate.ToString("dd MMM yyyy")</span>
+                                        }
+                                    </td>
+                                    @if (role == "Admin")
+                                    {
+                                        <td>
+                                            <form method="post" action="/Event/Delete" onsubmit="return confirm('Delete this event?');" style="margin:0;">
+                                                @Html.AntiForgeryToken()
+                                                <input type="hidden" name="id" value="@ev.Id" />
+                                                <button type="submit" class="btn btn-danger" style="font-size:12px; padding:6px 12px; margin-bottom:0;">Delete</button>
+                                            </form>
+                                        </td>
+                                    }
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                }
+                else
+                {
+                    <div style="color:var(--gray-400); padding:30px; text-align:center;">No events scheduled.</div>
+                }
+            </div>
+        </div>
+    </main>
+</div>

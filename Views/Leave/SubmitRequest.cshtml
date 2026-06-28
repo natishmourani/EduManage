@@ -1,0 +1,72 @@
+@model EduManage.Models.LeaveRequest
+@using Microsoft.AspNetCore.Http
+@{
+    ViewData["Title"] = "Request Leave";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var role = Context.Session.GetString("Role");
+}
+
+<div class="dashboard">
+    @if (role == "Teacher") { @await Html.PartialAsync("_TeacherSidebar") }
+    else if (role == "Student") { @await Html.PartialAsync("_StudentSidebar") }
+
+    <main class="main-content">
+        <div class="page-header">
+            <div class="page-title">Submit Leave Request</div>
+            <div class="page-sub">Request leave from class instruction. Admin approval is required.</div>
+        </div>
+
+        <div class="card">
+            <div class="card-title">
+                <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                </svg>
+                Leave Period & Reason
+            </div>
+
+            <form method="post" action="/Leave/SubmitRequest" onsubmit="return validateDates();">
+                @Html.AntiForgeryToken()
+
+                <div class="form-row">
+                    <div>
+                        <label class="field-label">Start Date *</label>
+                        <input class="field-input" type="date" id="StartDate" name="StartDate" required min="@DateTime.Now.ToString("yyyy-MM-dd")" />
+                    </div>
+                    <div>
+                        <label class="field-label">End Date *</label>
+                        <input class="field-input" type="date" id="EndDate" name="EndDate" required min="@DateTime.Now.ToString("yyyy-MM-dd")" />
+                    </div>
+                </div>
+
+                <div class="form-row full">
+                    <div>
+                        <label class="field-label">Reason for Leave *</label>
+                        <textarea class="field-input" name="Reason" placeholder="Explain the reason for your leave..." rows="5" required style="height:auto; font-family:inherit; padding:10px;"></textarea>
+                    </div>
+                </div>
+
+                <div id="dateError" style="color:var(--red); font-size:13px; margin-bottom:15px; display:none;">End date must be on or after start date.</div>
+
+                <div class="form-actions">
+                    <a href="/Leave/Index" class="btn btn-outline">Cancel</a>
+                    <button type="submit" class="btn btn-primary">Submit Request</button>
+                </div>
+            </form>
+        </div>
+    </main>
+</div>
+
+<script>
+    function validateDates() {
+        var start = new Date(document.getElementById('StartDate').value);
+        var end = new Date(document.getElementById('EndDate').value);
+        var error = document.getElementById('dateError');
+
+        if (end < start) {
+            error.style.display = 'block';
+            return false;
+        }
+        error.style.display = 'none';
+        return true;
+    }
+</script>

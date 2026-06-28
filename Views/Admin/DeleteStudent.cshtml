@@ -1,0 +1,90 @@
+@model IEnumerable<EduManage.Models.Student>
+@{
+    ViewData["Title"] = "Delete Students";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="dashboard">
+    @await Html.PartialAsync("_AdminSidebar")
+
+    <main class="main-content">
+        <div class="page-header">
+            <div class="page-title">Delete students</div>
+            <div class="page-sub">Remove student records from the system.</div>
+        </div>
+
+        <div class="card">
+            <div class="search-wrap">
+                <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                </svg>
+                <input class="search-input" id="searchBox" placeholder="Search student by name or roll no..." oninput="filterTable()" />
+            </div>
+
+            <table class="data-table" id="studentTable">
+                <thead>
+                    <tr>
+                        <th>Student</th>
+                        <th>Roll No</th>
+                        <th>Class</th>
+                        <th>Contact</th>
+                        <th>Status</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (Model != null && Model.Any())
+                    {
+                        @foreach (var s in Model)
+                        {
+                            <tr>
+                                <td>
+                                    <div style="display:flex;align-items:center;gap:10px;">
+                                        <div class="avatar avatar-blue">@(s.FullName?.Substring(0, Math.Min(2, s.FullName.Length)).ToUpper())</div>
+                                        <div>
+                                            <div style="font-weight:600;">@s.FullName</div>
+                                            <div style="font-size:12px;color:var(--gray-400);">@s.FatherName</div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>@s.RollNumber</td>
+                                <td>@s.Class - @s.Section</td>
+                                <td>@s.Contact</td>
+                                <td><span class="badge badge-green">Active</span></td>
+                                <td>
+                                    <form asp-action="DeleteStudentConfirm" asp-controller="Admin" method="post"
+                                          onsubmit="return confirm('Are you sure you want to delete @s.FullName?')">
+                                        @Html.AntiForgeryToken()
+                                        <input type="hidden" name="id" value="@s.Id" />
+                                        <button type="submit" class="btn btn-danger" style="padding:7px 14px;font-size:12px;">
+                                            Delete
+                                        </button>
+                                    </form>
+                                </td>
+                            </tr>
+                        }
+                    }
+                    else
+                    {
+                        <tr>
+                            <td colspan="6" style="text-align:center; padding:30px; color:var(--gray-400);">
+                                No student records found.
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </main>
+</div>
+
+@section Scripts {
+<script>
+function filterTable() {
+    const q = document.getElementById('searchBox').value.toLowerCase();
+    document.querySelectorAll('#studentTable tbody tr').forEach(row => {
+        row.style.display = row.textContent.toLowerCase().includes(q) ? '' : 'none';
+    });
+}
+</script>
+}

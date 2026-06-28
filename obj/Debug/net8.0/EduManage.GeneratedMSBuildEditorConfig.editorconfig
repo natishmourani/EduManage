@@ -1,0 +1,208 @@
+is_global = true
+build_property.TargetFramework = net8.0
+build_property.TargetFrameworkIdentifier = .NETCoreApp
+build_property.TargetFrameworkVersion = v8.0
+build_property.TargetPlatformMinVersion = 
+build_property.UsingMicrosoftNETSdkWeb = true
+build_property.ProjectTypeGuids = 
+build_property.InvariantGlobalization = 
+build_property.PlatformNeutralAssembly = 
+build_property.EnforceExtendedAnalyzerRules = 
+build_property.EntryPointFilePath = 
+build_property._SupportedPlatformList = Linux,macOS,Windows
+build_property.RootNamespace = EduManage
+build_property.RootNamespace = EduManage
+build_property.ProjectDir = D:\Web Development\EduManage_1\
+build_property.EnableComHosting = 
+build_property.EnableGeneratedComInterfaceComImportInterop = 
+build_property.RazorLangVersion = 8.0
+build_property.SupportLocalizedComponentNames = 
+build_property.GenerateRazorMetadataSourceChecksumAttributes = 
+build_property.MSBuildProjectDirectory = D:\Web Development\EduManage_1
+build_property._RazorSourceGeneratorDebug = 
+build_property.EffectiveAnalysisLevelStyle = 8.0
+build_property.EnableCodeStyleSeverity = 
+
+[D:/Web Development/EduManage_1/Views/Admin/AddStudent.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWRtaW5cQWRkU3R1ZGVudC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/Web Development/EduManage_1/Views/Admin/AddTeacher.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWRtaW5cQWRkVGVhY2hlci5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/Web Development/EduManage_1/Views/Admin/ChangeDetails.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWRtaW5cQ2hhbmdlRGV0YWlscy5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/Web Development/EduManage_1/Views/Admin/ChangePassword.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWRtaW5cQ2hhbmdlUGFzc3dvcmQuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/Web Development/EduManage_1/Views/Admin/ChangeTeacher.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWRtaW5cQ2hhbmdlVGVhY2hlci5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/Web Development/EduManage_1/Views/Admin/DeleteStudent.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWRtaW5cRGVsZXRlU3R1ZGVudC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/Web Development/EduManage_1/Views/Admin/DeleteTeacher.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWRtaW5cRGVsZXRlVGVhY2hlci5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/Web Development/EduManage_1/Views/Admin/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWRtaW5cSW5kZXguY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/Web Development/EduManage_1/Views/Announcement/Create.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQW5ub3VuY2VtZW50XENyZWF0ZS5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/Web Development/EduManage_1/Views/Announcement/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQW5ub3VuY2VtZW50XEluZGV4LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/Web Development/EduManage_1/Views/Assignment/Create.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQXNzaWdubWVudFxDcmVhdGUuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/Web Development/EduManage_1/Views/Assignment/Details.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQXNzaWdubWVudFxEZXRhaWxzLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/Web Development/EduManage_1/Views/Assignment/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQXNzaWdubWVudFxJbmRleC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/Web Development/EduManage_1/Views/Attendance/History.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQXR0ZW5kYW5jZVxIaXN0b3J5LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/Web Development/EduManage_1/Views/Attendance/Mark.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQXR0ZW5kYW5jZVxNYXJrLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/Web Development/EduManage_1/Views/Attendance/MyAttendance.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQXR0ZW5kYW5jZVxNeUF0dGVuZGFuY2UuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/Web Development/EduManage_1/Views/Attendance/Reports.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQXR0ZW5kYW5jZVxSZXBvcnRzLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/Web Development/EduManage_1/Views/Event/Create.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRXZlbnRcQ3JlYXRlLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/Web Development/EduManage_1/Views/Event/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRXZlbnRcSW5kZXguY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/Web Development/EduManage_1/Views/Exam/CreateExam.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRXhhbVxDcmVhdGVFeGFtLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/Web Development/EduManage_1/Views/Exam/EnterMarks.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRXhhbVxFbnRlck1hcmtzLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/Web Development/EduManage_1/Views/Exam/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRXhhbVxJbmRleC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/Web Development/EduManage_1/Views/Exam/MyResults.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRXhhbVxNeVJlc3VsdHMuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/Web Development/EduManage_1/Views/Home/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxJbmRleC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/Web Development/EduManage_1/Views/Leave/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTGVhdmVcSW5kZXguY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/Web Development/EduManage_1/Views/Leave/SubmitRequest.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTGVhdmVcU3VibWl0UmVxdWVzdC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/Web Development/EduManage_1/Views/Message/Inbox.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTWVzc2FnZVxJbmJveC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/Web Development/EduManage_1/Views/Message/Monitor.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTWVzc2FnZVxNb25pdG9yLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/Web Development/EduManage_1/Views/Message/Send.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTWVzc2FnZVxTZW5kLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/Web Development/EduManage_1/Views/Message/Sent.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTWVzc2FnZVxTZW50LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/Web Development/EduManage_1/Views/Shared/_AdminSidebar.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9BZG1pblNpZGViYXIuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/Web Development/EduManage_1/Views/Shared/_Layout.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9MYXlvdXQuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/Web Development/EduManage_1/Views/Shared/_StudentSidebar.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9TdHVkZW50U2lkZWJhci5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/Web Development/EduManage_1/Views/Shared/_TeacherSidebar.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9UZWFjaGVyU2lkZWJhci5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/Web Development/EduManage_1/Views/Student/ChangePassword.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU3R1ZGVudFxDaGFuZ2VQYXNzd29yZC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/Web Development/EduManage_1/Views/Student/CheckRemarks.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU3R1ZGVudFxDaGVja1JlbWFya3MuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/Web Development/EduManage_1/Views/Student/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU3R1ZGVudFxJbmRleC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/Web Development/EduManage_1/Views/Student/MyDetails.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU3R1ZGVudFxNeURldGFpbHMuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/Web Development/EduManage_1/Views/StudyMaterial/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU3R1ZHlNYXRlcmlhbFxJbmRleC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/Web Development/EduManage_1/Views/StudyMaterial/Upload.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU3R1ZHlNYXRlcmlhbFxVcGxvYWQuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/Web Development/EduManage_1/Views/Teacher/AddRemarks.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVGVhY2hlclxBZGRSZW1hcmtzLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/Web Development/EduManage_1/Views/Teacher/ChangePassword.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVGVhY2hlclxDaGFuZ2VQYXNzd29yZC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/Web Development/EduManage_1/Views/Teacher/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVGVhY2hlclxJbmRleC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/Web Development/EduManage_1/Views/Teacher/ViewDetails.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVGVhY2hlclxWaWV3RGV0YWlscy5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/Web Development/EduManage_1/Views/_ViewImports.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcX1ZpZXdJbXBvcnRzLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/Web Development/EduManage_1/Views/_ViewStart.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcX1ZpZXdTdGFydC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 

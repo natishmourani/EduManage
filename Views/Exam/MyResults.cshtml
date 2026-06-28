@@ -1,0 +1,126 @@
+@model IEnumerable<EduManage.Models.Result>
+@{
+    ViewData["Title"] = "My Results";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var exams = (Dictionary<int, EduManage.Models.Exam>)ViewBag.Exams;
+    var student = (EduManage.Models.Student)ViewBag.Student;
+    var upcomingExams = (List<EduManage.Models.Exam>)ViewBag.UpcomingExams ?? new List<EduManage.Models.Exam>();
+    var examAnnouncements = (List<EduManage.Models.Announcement>)ViewBag.ExamAnnouncements ?? new List<EduManage.Models.Announcement>();
+}
+
+<div class="dashboard">
+    @await Html.PartialAsync("_StudentSidebar")
+
+    <main class="main-content">
+        <div class="page-header">
+            <div class="page-title">My Academic Results</div>
+            <div class="page-sub">Academic reports and graded exam sheets for @student?.FullName</div>
+        </div>
+
+        @if (upcomingExams.Any() || examAnnouncements.Any())
+        {
+            <div class="card" style="margin-bottom:20px;">
+                <div class="card-title">
+                    <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                    </svg>
+                    Upcoming Exams &amp; Announcements
+                </div>
+
+                @if (upcomingExams.Any())
+                {
+                    <table class="data-table" style="margin-bottom:15px;">
+                        <thead>
+                            <tr>
+                                <th>Exam</th>
+                                <th>Subject</th>
+                                <th>Date</th>
+                                <th>Total Marks</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var exam in upcomingExams.Where(e => e.Date.Date >= DateTime.Today))
+                            {
+                                <tr>
+                                    <td><strong>@exam.Name</strong></td>
+                                    <td>@exam.Subject</td>
+                                    <td>@exam.Date.ToString("dd MMM yyyy")</td>
+                                    <td>@exam.TotalMarks</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                }
+
+                @if (examAnnouncements.Any())
+                {
+                    <div style="display:flex; flex-direction:column; gap:12px;">
+                        @foreach (var ann in examAnnouncements)
+                        {
+                            <div style="padding:12px; background:var(--gray-50); border-radius:8px; border:1px solid var(--gray-100);">
+                                <div style="font-weight:700; color:var(--gray-800); margin-bottom:4px;">@ann.Title</div>
+                                <div style="font-size:13px; color:var(--gray-600); line-height:1.5;">@ann.Content</div>
+                            </div>
+                        }
+                    </div>
+                }
+            </div>
+        }
+
+        <div class="card">
+            <div class="card-title">
+                <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                </svg>
+                Exam Report Card
+            </div>
+
+            @if (Model != null && Model.Any())
+            {
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Exam Name</th>
+                            <th>Subject</th>
+                            <th>Exam Date</th>
+                            <th>Obtained Marks</th>
+                            <th>Max Marks</th>
+                            <th>Percentage</th>
+                            <th>Grade</th>
+                            <th>Remarks</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var result in Model)
+                        {
+                            var exam = exams.ContainsKey(result.ExamId) ? exams[result.ExamId] : null;
+                            var examName = exam?.Name ?? "Unknown Exam";
+                            var subject = exam?.Subject ?? "Unknown Subject";
+                            var date = exam?.Date.ToString("dd MMM yyyy") ?? "—";
+                            var total = exam?.TotalMarks ?? 100;
+                            var pct = Math.Round(((double)result.ObtainedMarks / total) * 100, 1);
+                            <tr>
+                                <td><strong>@examName</strong></td>
+                                <td>@subject</td>
+                                <td>@date</td>
+                                <td><span style="font-weight:700;">@result.ObtainedMarks</span></td>
+                                <td>@total</td>
+                                <td>
+                                    <span class="badge @(pct >= 80 ? "badge-green" : pct >= 60 ? "badge-blue" : pct >= 50 ? "badge-amber" : "badge-danger")">
+                                        @pct%
+                                    </span>
+                                </td>
+                                <td><strong style="color:@(result.Grade == "F" ? "var(--red)" : "var(--primary)");">@result.Grade</strong></td>
+                                <td style="font-size:12px; color:var(--gray-500);">@(string.IsNullOrEmpty(result.Remarks) ? "—" : result.Remarks)</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            }
+            else
+            {
+                <div style="color:var(--gray-400); padding:30px; text-align:center;">No published results found.</div>
+            }
+        </div>
+    </main>
+</div>

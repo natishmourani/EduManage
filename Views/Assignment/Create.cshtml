@@ -1,0 +1,77 @@
+@model EduManage.Models.Assignment
+@{
+    ViewData["Title"] = "Create Assignment";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var assignedClass = (string)ViewBag.AssignedClass;
+}
+
+<div class="dashboard">
+    @await Html.PartialAsync("_TeacherSidebar")
+
+    <main class="main-content">
+        <div class="page-header">
+            <div class="page-title">Create Assignment</div>
+            <div class="page-sub">Create a new classroom assignment for students.</div>
+        </div>
+
+        <div class="card">
+            <div class="card-title">
+                <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path d="M12 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"/>
+                </svg>
+                Assignment Information
+            </div>
+
+            <form method="post" action="/Assignment/Create" enctype="multipart/form-data">
+                @Html.AntiForgeryToken()
+
+                <div class="form-row">
+                    <div>
+                        <label class="field-label">Assignment Title *</label>
+                        <input class="field-input" type="text" name="Title" placeholder="e.g. Algebra Homework 1" required />
+                    </div>
+                    <div>
+                        <label class="field-label">Class *</label>
+                        @if (!string.IsNullOrEmpty(assignedClass))
+                        {
+                            <input class="field-input" type="text" name="Class" value="@assignedClass" readonly />
+                        }
+                        else
+                        {
+                            <select class="field-select" name="Class" required>
+                                <option value="">Select Class</option>
+                                @for (int i = 1; i <= 12; i++)
+                                {
+                                    <option value="Class @i">Class @i</option>
+                                }
+                            </select>
+                        }
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div>
+                        <label class="field-label">Due Date *</label>
+                        <input class="field-input" type="datetime-local" name="DueDate" required min="@DateTime.Now.ToString("yyyy-MM-ddTHH:mm")" />
+                    </div>
+                    <div>
+                        <label class="field-label">Assignment Attachment (Optional)</label>
+                        <input class="field-input" type="file" name="file" />
+                    </div>
+                </div>
+
+                <div class="form-row full">
+                    <div>
+                        <label class="field-label">Description / Instructions *</label>
+                        <textarea class="field-input" name="Description" placeholder="Provide instructions for the assignment..." rows="5" required style="height:auto; font-family:inherit; padding:10px;"></textarea>
+                    </div>
+                </div>
+
+                <div class="form-actions">
+                    <a href="/Assignment/Index" class="btn btn-outline">Cancel</a>
+                    <button type="submit" class="btn btn-primary">Publish Assignment</button>
+                </div>
+            </form>
+        </div>
+    </main>
+</div>

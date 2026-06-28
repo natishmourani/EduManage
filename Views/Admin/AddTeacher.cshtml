@@ -1,0 +1,137 @@
+@{
+    ViewData["Title"] = "Add Teacher";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="dashboard">
+    @await Html.PartialAsync("_AdminSidebar")
+
+    <main class="main-content">
+        <div class="page-header">
+            <div class="page-title">Add teacher</div>
+            <div class="page-sub">Add a new teacher to the system.</div>
+        </div>
+
+        <div class="card">
+            <div class="card-title">
+                <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
+                </svg>
+                Teacher registration form
+            </div>
+
+            <form asp-action="AddTeacher" asp-controller="Admin" method="post">
+                @Html.AntiForgeryToken()
+
+                <div class="form-row">
+                    <div>
+                        <label class="field-label">Full name *</label>
+                        <input class="field-input" name="FullName" placeholder="e.g. Mr. Kamran" required />
+                    </div>
+                    <div>
+                        <label class="field-label">Subject *</label>
+                        <select class="field-select" name="Subject" required>
+                            <option value="">Select subject</option>
+                            @if (ViewBag.Subjects != null)
+                            {
+                                foreach (var sub in (List<EduManage.Models.Subject>)ViewBag.Subjects)
+                                {
+                                    <option value="@sub.Name">@sub.Name</option>
+                                }
+                            }
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div>
+                        <label class="field-label">Assigned class *</label>
+                        <select class="field-select" name="AssignedClass" required>
+                            <option value="">Select class</option>
+                            @for (int i = 1; i <= 12; i++)
+                            {
+                                <option>Class @i</option>
+                            }
+                        </select>
+                    </div>
+                    <div>
+                        <label class="field-label">Assigned section *</label>
+                        <select class="field-select" name="AssignedSection" required>
+                            <option value="">Select section</option>
+                            <option>A</option>
+                            <option>B</option>
+                            <option>C</option>
+                            <option>D</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div>
+                        <label class="field-label">Contact number</label>
+                        <input class="field-input" name="Contact" placeholder="0300-0000000" />
+                    </div>
+                    <div></div>
+                </div>
+
+                <div class="form-row">
+                    <div>
+                        <label class="field-label">Username *</label>
+                        <input class="field-input" name="Username" placeholder="Login username" required />
+                    </div>
+                    <div>
+                        <label class="field-label">Password *</label>
+                        <input class="field-input" type="password" name="Password" placeholder="Login password" required />
+                    </div>
+                </div>
+
+                @if (ViewBag.Success != null)
+                {
+                    <p style="color: var(--green); font-size:13px; margin-bottom:10px;">@ViewBag.Success</p>
+                }
+
+                <div class="form-actions">
+                    <button type="reset" class="btn btn-outline">Reset form</button>
+                    <button type="submit" class="btn btn-primary">+ Add teacher</button>
+                </div>
+            </form>
+
+            <!-- Quick list of teachers so admin can delete directly -->
+            <div style="margin-top:18px;">
+                <h3 style="margin:8px 0;">Existing teachers</h3>
+                @if (ViewBag.AllTeachers != null && ((System.Collections.IEnumerable)ViewBag.AllTeachers).Cast<object>().Any())
+                {
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Subject</th>
+                                <th>Assigned Class</th>
+                                <th>Section</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        @foreach (var t in (System.Collections.Generic.List<EduManage.Models.Teacher>)ViewBag.AllTeachers)
+                        {
+                            <tr>
+                                <td>@t.FullName</td>
+                                <td>@t.Subject</td>
+                                <td>@t.AssignedClass</td>
+                                <td>@t.AssignedSection</td>
+                                <td>
+                                    <a class="btn btn-danger" href="/Admin/DeleteTeacher">Delete</a>
+                                </td>
+                            </tr>
+                        }
+                        </tbody>
+                    </table>
+                }
+                else
+                {
+                    <div style="color:var(--gray-400); padding:10px;">No teachers yet.</div>
+                }
+            </div>
+        </div>
+    </main>
+</div>

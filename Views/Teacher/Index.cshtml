@@ -1,0 +1,135 @@
+@{
+    ViewData["Title"] = "Teacher Dashboard";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var teacher = (EduManage.Models.Teacher)ViewBag.Teacher;
+    var studentCount = (int)ViewBag.StudentCount;
+    var attendancePct = (int)ViewBag.AttendancePct;
+    var pendingSubmissions = (int)ViewBag.PendingSubmissions;
+    var assignments = (List<EduManage.Models.Assignment>)ViewBag.Assignments;
+    var exams = (List<EduManage.Models.Exam>)ViewBag.Exams;
+    var announcements = (List<EduManage.Models.Announcement>)ViewBag.RecentAnnouncements;
+}
+
+<div class="dashboard">
+    @await Html.PartialAsync("_TeacherSidebar")
+
+    <main class="main-content">
+        <div class="page-header">
+            <div class="page-title">Teacher Dashboard</div>
+            <div class="page-sub">Welcome back, Mr/Ms. <strong>@teacher?.FullName</strong>. Here is your class instruction dashboard.</div>
+        </div>
+
+        @if (string.IsNullOrEmpty(teacher?.AssignedClass))
+        {
+            <div class="card" style="border-left: 5px solid var(--red); padding:20px; margin-bottom:20px;">
+                <div style="font-weight:700; color:var(--red);">No assigned class!</div>
+                <div style="font-size:13px; color:var(--gray-600); margin-top:5px;">You have not been assigned to instruct any class yet. Please contact the administrator.</div>
+            </div>
+        }
+        else
+        {
+            <!-- Metric Grid -->
+            <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap:20px; margin-bottom:25px;">
+                <div class="card" style="border-left: 5px solid var(--purple); padding:20px; display:flex; flex-direction:column; justify-content:center;">
+                    <div style="font-size:12px; font-weight:700; color:var(--gray-400); text-transform:uppercase;">Class Enrollment</div>
+                    <div style="font-size:32px; font-weight:800; color:var(--gray-800); margin:5px 0;">@studentCount</div>
+                    <a href="/Teacher/ViewDetails" style="font-size:12px; color:var(--purple); font-weight:700;">View Students &rarr;</a>
+                </div>
+                <div class="card" style="border-left: 5px solid var(--green); padding:20px; display:flex; flex-direction:column; justify-content:center;">
+                    <div style="font-size:12px; font-weight:700; color:var(--gray-400); text-transform:uppercase;">Class Attendance</div>
+                    <div style="font-size:32px; font-weight:800; color:var(--gray-800); margin:5px 0;">@attendancePct%</div>
+                    <a href="/Attendance/Mark" style="font-size:12px; color:var(--green); font-weight:700;">Mark Attendance &rarr;</a>
+                </div>
+                <div class="card" style="border-left: 5px solid var(--amber); padding:20px; display:flex; flex-direction:column; justify-content:center;">
+                    <div style="font-size:12px; font-weight:700; color:var(--gray-400); text-transform:uppercase;">Pending Submissions</div>
+                    <div style="font-size:32px; font-weight:800; color:var(--gray-800); margin:5px 0;">@pendingSubmissions</div>
+                    <a href="/Assignment/Index" style="font-size:12px; color:var(--amber); font-weight:700;">Grade Homeworks &rarr;</a>
+                </div>
+            </div>
+
+            <div style="display:grid; grid-template-columns: 2fr 1fr; gap:25px; flex-wrap:wrap; margin-bottom:25px;">
+                <!-- Assignments list -->
+                <div class="card">
+                    <div class="card-title">
+                        Class Homework / Assignments
+                    </div>
+                    @if (assignments != null && assignments.Any())
+                    {
+                        <table class="data-table" style="margin-top:10px;">
+                            <thead>
+                                <tr>
+                                    <th>Title</th>
+                                    <th>Due Date</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var assignment in assignments)
+                                {
+                                    <tr>
+                                        <td><strong>@assignment.Title</strong></td>
+                                        <td>@assignment.DueDate.ToString("dd MMM yyyy")</td>
+                                        <td><a href="/Assignment/Details/@assignment.Id" class="btn btn-outline" style="font-size:11px; padding:4px 8px;">Grade</a></td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    }
+                    else
+                    {
+                        <p style="color:var(--gray-400); text-align:center; padding:20px;">No assignments created yet.</p>
+                    }
+                </div>
+
+                <!-- Exams List -->
+                <div class="card">
+                    <div class="card-title">Upcoming Exams</div>
+                    @if (exams != null && exams.Any())
+                    {
+                        <div style="display:flex; flex-direction:column; gap:12px; margin-top:10px;">
+                            @foreach (var ex in exams)
+                            {
+                                <div style="border-left:3px solid var(--amber); padding-left:10px;">
+                                    <div style="font-size:13px; font-weight:700; color:var(--gray-800);">@ex.Subject</div>
+                                    <div style="font-size:12px; color:var(--gray-600);">@ex.Name</div>
+                                    <div style="font-size:11px; color:var(--gray-400);">Date: @ex.Date.ToString("dd MMM yyyy")</div>
+                                </div>
+                            }
+                        </div>
+                    }
+                    else
+                    {
+                        <p style="color:var(--gray-400); text-align:center; padding:15px; font-size:13px;">No exams scheduled.</p>
+                    }
+                </div>
+            </div>
+        }
+
+        <!-- Recent Announcements -->
+        <div class="card">
+            <div class="card-title">
+                Recent Announcements
+            </div>
+
+            @if (announcements != null && announcements.Any())
+            {
+                <div style="display:flex; flex-direction:column; gap:15px; margin-top:10px;">
+                    @foreach (var ann in announcements)
+                    {
+                        <div style="padding-bottom:12px; border-bottom:1px solid var(--gray-100);">
+                            <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:5px; margin-bottom:5px;">
+                                <strong style="font-size:14px; color:var(--gray-800);">@ann.Title</strong>
+                                <span style="font-size:11px; color:var(--gray-400);">@ann.CreatedAt.ToString("g")</span>
+                            </div>
+                            <p style="font-size:13px; color:var(--gray-600); margin:0; line-height:1.5;">@ann.Content</p>
+                        </div>
+                    }
+                </div>
+            }
+            else
+            {
+                <p style="color:var(--gray-400); text-align:center; padding:15px;">No announcements posted yet.</p>
+            }
+        </div>
+    </main>
+</div>

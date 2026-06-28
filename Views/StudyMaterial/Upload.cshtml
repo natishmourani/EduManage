@@ -1,0 +1,72 @@
+@model EduManage.Models.StudyMaterial
+@using Microsoft.AspNetCore.Http
+@{
+    ViewData["Title"] = "Upload Study Material";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var role = Context.Session.GetString("Role");
+    var classes = (List<string>)ViewBag.Classes;
+}
+
+<div class="dashboard">
+    @if (role == "Admin") { @await Html.PartialAsync("_AdminSidebar") }
+    else if (role == "Teacher") { @await Html.PartialAsync("_TeacherSidebar") }
+
+    <main class="main-content">
+        <div class="page-header">
+            <div class="page-title">Upload Study Material</div>
+            <div class="page-sub">Upload lecture notes, slides, PDFs, or assignments guides.</div>
+        </div>
+
+        <div class="card">
+            <div class="card-title">
+                <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
+                </svg>
+                Resource Metadata
+            </div>
+
+            <form method="post" action="/StudyMaterial/Upload" enctype="multipart/form-data">
+                @Html.AntiForgeryToken()
+
+                <div class="form-row">
+                    <div>
+                        <label class="field-label">Resource Title *</label>
+                        <input class="field-input" type="text" name="Title" placeholder="e.g. Chapter 4 Lecture Notes" required />
+                    </div>
+                    <div>
+                        <label class="field-label">Target Class *</label>
+                        <select class="field-select" name="Class" required>
+                            <option value="">Select Target Class</option>
+                            @foreach (var c in classes)
+                            {
+                                <option value="@c">@c</option>
+                            }
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div>
+                        <label class="field-label">Select File *</label>
+                        <input class="field-input" type="file" name="file" required />
+                        <span style="font-size:12px; color:var(--gray-400);">PDF, Slides (PPTX), Document files are highly recommended.</span>
+                    </div>
+                    <div>
+                        <label class="field-label">Description (Optional)</label>
+                        <input class="field-input" type="text" name="Description" placeholder="e.g. Covers calculus limit laws" />
+                    </div>
+                </div>
+
+                @if (ViewBag.Error != null)
+                {
+                    <p style="color:var(--red); font-size:13px; margin-bottom:10px;">@ViewBag.Error</p>
+                }
+
+                <div class="form-actions">
+                    <a href="/StudyMaterial/Index" class="btn btn-outline">Cancel</a>
+                    <button type="submit" class="btn btn-primary">Upload Resource</button>
+                </div>
+            </form>
+        </div>
+    </main>
+</div>

@@ -1,0 +1,111 @@
+@model IEnumerable<EduManage.Models.Attendance>
+@{
+    ViewData["Title"] = "My Attendance";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var student = (EduManage.Models.Student)ViewBag.Student;
+    int attendancePct = student?.Attendance ?? 100;
+}
+
+<div class="dashboard">
+    @await Html.PartialAsync("_StudentSidebar")
+
+    <main class="main-content">
+        <div class="page-header">
+            <div class="page-title">My Attendance</div>
+            <div class="page-sub">Track your daily class attendance records and percentage.</div>
+        </div>
+
+        <div style="display:grid; grid-template-columns: 1fr 2fr; gap:20px; flex-wrap:wrap; margin-bottom:20px;">
+            <!-- Attendance Metric Card -->
+            <div class="card" style="display:flex; flex-direction:column; align-items:center; justify-content:center; padding:30px;">
+                <div class="card-title" style="width:100%; text-align:left;">
+                    Overall Attendance
+                </div>
+                
+                <div style="width:120px; height:120px; border-radius:50%; border:10px solid @(attendancePct >= 80 ? "var(--green)" : attendancePct >= 60 ? "var(--amber)" : "var(--red)"); display:flex; align-items:center; justify-content:center; margin:20px 0;">
+                    <span style="font-size:24px; font-weight:700; color:var(--gray-800);">@attendancePct%</span>
+                </div>
+
+                <div style="font-size:14px; color:var(--gray-600); text-align:center;">
+                    @if (attendancePct >= 80)
+                    {
+                        <span class="badge badge-green">Excellent attendance! Keep it up.</span>
+                    }
+                    else if (attendancePct >= 60)
+                    {
+                        <span class="badge badge-amber">Warning: Try to improve your attendance.</span>
+                    }
+                    else
+                    {
+                        <span class="badge badge-danger">Critical: Low attendance! Contact administration.</span>
+                    }
+                </div>
+            </div>
+
+            <!-- Attendance Legend and Info -->
+            <div class="card" style="padding:20px;">
+                <div class="card-title">
+                    Attendance Information
+                </div>
+                <p style="font-size:14px; color:var(--gray-700); line-height:1.6; margin-bottom:15px;">
+                    Students are expected to maintain at least <strong>75%</strong> attendance to be eligible to sit for exams. Leaves must be requested beforehand using the leave requests portal.
+                </p>
+                
+                <div class="cal-legend" style="display:flex; flex-direction:column; gap:10px; border-top:1px solid var(--gray-200); padding-top:15px;">
+                    <span style="display:flex; align-items:center; gap:10px;"><span class="legend-dot" style="background:#D1FAE5; display:inline-block; width:12px; height:12px; border-radius:3px;"></span> <strong>Present</strong> - Attended class.</span>
+                    <span style="display:flex; align-items:center; gap:10px;"><span class="legend-dot" style="background:#FEE2E2; display:inline-block; width:12px; height:12px; border-radius:3px;"></span> <strong>Absent</strong> - Missed class without prior request.</span>
+                    <span style="display:flex; align-items:center; gap:10px;"><span class="legend-dot" style="background:#FEF3C7; display:inline-block; width:12px; height:12px; border-radius:3px;"></span> <strong>Leave</strong> - Leave request was approved by administration.</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-title">
+                <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                </svg>
+                Date-wise Attendance History
+            </div>
+
+            @if (Model != null && Model.Any())
+            {
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Status</th>
+                            <th>Remarks</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var record in Model)
+                        {
+                            <tr>
+                                <td>@record.Date.ToString("dd MMMM yyyy")</td>
+                                <td>
+                                    @if (record.Status == "Present")
+                                    {
+                                        <span class="badge badge-green">Present</span>
+                                    }
+                                    else if (record.Status == "Absent")
+                                    {
+                                        <span class="badge badge-danger">Absent</span>
+                                    }
+                                    else if (record.Status == "Leave")
+                                    {
+                                        <span class="badge badge-amber">Leave</span>
+                                    }
+                                </td>
+                                <td style="font-size:13px; color:var(--gray-600);">@(string.IsNullOrEmpty(record.Remarks) ? "—" : record.Remarks)</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            }
+            else
+            {
+                <div style="color:var(--gray-400); padding:30px; text-align:center;">No attendance records found yet.</div>
+            }
+        </div>
+    </main>
+</div>
